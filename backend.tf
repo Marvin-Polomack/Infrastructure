@@ -13,7 +13,7 @@ terraform {
   backend "s3" {
     bucket = "freelance-tfstate"
     key    = "freelance.tfstate"
-    region = "us-west-3"
+    region = "eu-west-3"
   }
 
 }
