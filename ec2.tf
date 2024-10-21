@@ -8,7 +8,7 @@ resource "aws_vpc" "k8s_vpc" {
 resource "aws_subnet" "k8s_subnet" {
   vpc_id     = aws_vpc.k8s_vpc.id
   cidr_block = "10.0.1.0/24"
-  availability_zone = "eu-west-3"
+  availability_zone = "eu-west-3a"
 }
 
 resource "aws_security_group" "k8s_sg" {
