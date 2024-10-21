@@ -6,8 +6,8 @@ resource "aws_vpc" "k8s_vpc" {
 }
 
 resource "aws_subnet" "k8s_subnet" {
-  vpc_id     = aws_vpc.k8s_vpc.id
-  cidr_block = "10.0.1.0/24"
+  vpc_id            = aws_vpc.k8s_vpc.id
+  cidr_block        = "10.0.1.0/24"
   availability_zone = "eu-west-3a"
 }
 
@@ -66,10 +66,10 @@ resource "aws_route_table_association" "public_association" {
 }
 
 resource "aws_instance" "ec2_k8s" {
-  ami           = data.aws_ami.amazon_linux_2023.image_id
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.k8s_subnet.id
-  security_groups = [aws_security_group.k8s_sg.name]
+  ami                    = data.aws_ami.amazon_linux_2023.image_id
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.k8s_subnet.id
+  vpc_security_group_ids = [aws_security_group.k8s_sg.name]
 
   user_data = <<-EOF
               #!/bin/bash
