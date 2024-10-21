@@ -69,7 +69,7 @@ resource "aws_instance" "ec2_k8s" {
   ami                    = data.aws_ami.amazon_linux_2023.image_id
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.k8s_subnet.id
-  vpc_security_group_ids = [aws_security_group.k8s_sg.name]
+  vpc_security_group_ids = [aws_security_group.k8s_sg.id]
 
   user_data = <<-EOF
               #!/bin/bash
