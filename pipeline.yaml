@@ -1,0 +1,45 @@
+name: Infrastructures Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose the deployment environment'
+        required: true
+        type: choice
+        options:
+          - production
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        if: ${{ github.ref == 'refs/heads/main' }}
+        environment:
+          name: ${{ github.event.inputs.environment }}
+        run: terraform apply -auto-approve=false
+        needs: approval
+
+  approval:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for manual approval
+        uses: peter-murray/workflow-approval-action@v1
+        with:
+          environment: ${{ github.event.inputs.environment }}
