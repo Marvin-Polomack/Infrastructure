@@ -1,6 +1,9 @@
 name: Infrastructures Deploy
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       environment:
@@ -9,6 +12,7 @@ on:
         type: choice
         options:
           - production
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
