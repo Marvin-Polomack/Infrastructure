@@ -46,6 +46,4 @@ jobs:
 
       - name: Terraform Apply
         if: ${{ github.ref == 'refs/heads/main' }}
-        environment:
-          name: ${{ github.event.inputs.environment || 'production' }}
         run: terraform apply -auto-approve=false
