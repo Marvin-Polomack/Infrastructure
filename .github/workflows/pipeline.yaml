@@ -33,7 +33,6 @@ jobs:
 
       - name: Terraform Init
         run: |
-          pwd
           git submodule update --remote
           ls ./modules
           terraform init
