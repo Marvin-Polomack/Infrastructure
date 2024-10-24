@@ -66,7 +66,7 @@ resource "aws_route_table_association" "public_association" {
 }
 
 module "ec2_k8s" {
-  source = "modules/ec2"
+  source = "./modules/ec2"
   ami                    = data.aws_ami.amazon_linux_2023.image_id
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.k8s_subnet.id
