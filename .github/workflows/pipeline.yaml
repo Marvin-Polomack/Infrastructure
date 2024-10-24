@@ -32,13 +32,13 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          pwd
+          terraform init
 
       - name: Terraform Plan
         id: plan
-        run: |
-          pwd
-          terraform plan -detailed-exitcode -out=tfplan
+        run: terraform plan -detailed-exitcode -out=tfplan
 
   terraform_apply:
     runs-on: ubuntu-latest
