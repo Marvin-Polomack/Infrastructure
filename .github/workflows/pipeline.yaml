@@ -34,7 +34,7 @@ jobs:
       - name: Terraform Init
         run: |
           pwd
-          ls .modules
+          ls ./modules
           terraform init
 
       - name: Terraform Plan
