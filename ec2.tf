@@ -65,7 +65,8 @@ resource "aws_route_table_association" "public_association" {
   route_table_id = aws_route_table.public_rt.id
 }
 
-resource "aws_instance" "ec2_k8s" {
+module "ec2_k8s" {
+  source = "modules/ec2"
   ami                    = data.aws_ami.amazon_linux_2023.image_id
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.k8s_subnet.id
@@ -116,12 +117,4 @@ resource "aws_instance" "ec2_k8s" {
   tags = {
     Name = "ec2_k8s"
   }
-}
-
-output "master_instance_public_ip" {
-  value = aws_instance.ec2_k8s.public_ip
-}
-
-output "kubeconfig_command" {
-  value = "ssh -i ~/.ssh/your_key_pair.pem ubuntu@${aws_instance.ec2_k8s.public_ip} 'cat /home/ubuntu/.kube/config'"
 }
