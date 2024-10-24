@@ -32,10 +32,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Init
-        run: |
-          git submodule update --init --remote
-          ls ./modules
-          terraform init
+        run: terraform init
 
       - name: Terraform Plan
         id: plan
