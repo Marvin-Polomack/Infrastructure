@@ -39,7 +39,13 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -detailed-exitcode
+        run: |
+          terraform plan -detailed-exitcode
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 2 ]; then
+          elif [ $EXIT_CODE -ne 0 ]; then
+            exit $EXIT_CODE
+          fi
 
   terraform_apply:
     runs-on: ubuntu-latest
