@@ -41,7 +41,7 @@ jobs:
         id: plan
         continue-on-error: true
         run: |
-          terraform plan -detailed-exitcode
+          terraform plan -detailed-exitcode || true
           EXIT_CODE=$?
 
           if [ $EXIT_CODE -eq 2 ]; then
