@@ -54,18 +54,18 @@ jobs:
           fi
 
       - name: Conditional Actions Based on Terraform Plan
-        if: env.terraform_exit_code == '1'
+        if: ${{ env.terraform_exit_code == '1' }}
         run: echo "Terraform failed with an error!"
         continue-on-error: false
 
       - name: Proceed if Changes Were Detected
-        if: env.terraform_exit_code == '2'
+        if: ${{ env.terraform_exit_code == '2' }}
         run: echo "Proceeding with changes detected by Terraform."
 
   terraform_apply:
     runs-on: ubuntu-latest
     needs: terraform_plan
-    if: success() && env.terraform_exit_code == '2'
+    if: success() && ${{ env.terraform_exit_code == '2' }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
