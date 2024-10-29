@@ -72,7 +72,7 @@ jobs:
   terraform_apply:
     runs-on: ubuntu-latest
     needs: terraform_plan
-    if: success() && ${{ env.terraform_exit_code == '2' }}
+    if: success() && needs.terraform_plan.env.terraform_exit_code == '2'
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
