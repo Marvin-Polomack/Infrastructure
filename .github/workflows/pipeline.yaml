@@ -45,15 +45,12 @@ jobs:
           if [ $EXIT_CODE -eq 2 ]; then
             echo "Terraform detected changes."
             echo "terraform_exit_code=2" >> $GITHUB_ENV
-            echo $GITHUB_ENV
           elif [ $EXIT_CODE -eq 1 ]; then
             echo "Terraform encountered an error."
             echo "terraform_exit_code=1" >> $GITHUB_ENV
-            echo $GITHUB_ENV
           else
             echo "No changes detected."
             echo "terraform_exit_code=0" >> $GITHUB_ENV
-            echo $GITHUB_ENV
           fi
 
       - name: Conditional Actions Based on Terraform Plan
