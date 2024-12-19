@@ -63,6 +63,8 @@ jobs:
     environment:
       name: ${{ github.event.inputs.environment || 'production' }}
     steps:
+      - name: Debug Output
+        run: echo "terraform_exit_code=${{ needs.terraform_plan.outputs.terraform_exit_code }}"
       - name: Checkout code
         uses: actions/checkout@v2
         with:
