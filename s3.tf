@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "kubeconfig_bucket" {
-  bucket        = "kubeconfig-bucket"
+  bucket        = "kubeconfig-bucket-freelance"
   acl           = "private"  # Adjust permissions as needed (e.g., "private" for security)
 
   # Enable server-side encryption
