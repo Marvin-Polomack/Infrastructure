@@ -6,60 +6,66 @@ module "ec2_k8s" {
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
 
   user_data = <<-EOF
-              #!/bin/bash
+              #!/bin/bash -ex
+              exec > /var/log/user_data.log 2>&1
+
               # Update the system
-              sudo apt-get update -y
-              sudo apt-get upgrade -y
+              sudo dnf update -y
+
+              # Install necessary tools
+              sudo dnf install -y curl unzip jq
 
               # Install Docker
-              sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-              sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-              sudo apt-get update -y
-              sudo apt-get install -y docker-ce
-              sudo usermod -aG docker ubuntu
-
-              # Enable Docker service
+              sudo dnf install -y docker
               sudo systemctl enable docker
               sudo systemctl start docker
+              sudo usermod -aG docker ec2-user
 
-              # Install kubeadm, kubelet, and kubectl
-              sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl
-              curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-              sudo bash -c 'cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-              deb https://apt.kubernetes.io/ kubernetes-xenial main
-              EOF'
+              # Set up Kubernetes repo
+              cat <<YUM_REPO | sudo tee /etc/yum.repos.d/kubernetes.repo
+              [kubernetes]
+              name=Kubernetes
+              baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+              enabled=1
+              gpgcheck=0
+              repo_gpgcheck=0
+              YUM_REPO
 
-              sudo apt-get update -y
-              sudo apt-get install -y kubelet kubeadm kubectl
-              sudo apt-mark hold kubelet kubeadm kubectl
+              # Install Kubernetes components
+              sudo dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+              sudo systemctl enable kubelet
+              sudo systemctl start kubelet
 
-              # Initialize Kubernetes master
+              # Initialize Kubernetes control plane
+              # Note: If this is a single-control-plane cluster, it's safe to do directly. 
               sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 
-              # Setup kubeconfig for ubuntu user
-              mkdir -p /home/ubuntu/.kube
-              sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
-              sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
+              # Set up kubeconfig for ec2-user
+              mkdir -p /home/ec2-user/.kube
+              sudo cp /etc/kubernetes/admin.conf /home/ec2-user/.kube/config
+              sudo chown ec2-user:ec2-user /home/ec2-user/.kube/config
 
-              # Install Weave Net as a pod network
-              kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')
+              # Use the admin kubeconfig
+              export KUBECONFIG=/etc/kubernetes/admin.conf
 
-              # Install AWS CLI
+              # Wait briefly for the API server to be fully ready
+              sleep 60
+
+              # Install the Weave Net CNI (adjust if you prefer another network plugin)
+              kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\\n')"
+
+              # Install AWS CLI v2
               curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
               unzip awscliv2.zip
               sudo ./aws/install
 
-              # Set up kubeconfig for root user
-              export KUBECONFIG=/etc/kubernetes/admin.conf
-
               # Upload kubeconfig to S3
               aws s3 cp /etc/kubernetes/admin.conf s3://${aws_s3_bucket.kubeconfig_bucket.bucket_domain_name}/kubeconfig-$(hostname)-$(date +%Y-%m-%d).conf
-
               EOF
 
   tags = {
     Name = "ec2_k8s"
   }
+
   depends_on = [ aws_s3_bucket.kubeconfig_bucket ]
 }
