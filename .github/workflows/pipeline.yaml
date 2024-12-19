@@ -48,8 +48,11 @@ jobs:
 
       - name: Proceed if Changes Were Detected
         if: ${{ steps.plan.outputs.exitcode == '2' }}
-        run: echo "Proceeding with changes detected by Terraform." && echo "terraform_exit_code=${{ steps.plan.outputs.exitcode }}" >> $GITHUB_OUTPUT
+        run: echo "Proceeding with changes detected by Terraform."
         id: set_exit_code
+    
+    outputs:
+      terraform_exit_code: ${{ steps.set_exit_code.outputs.terraform_exit_code }}
 
   terraform_apply:
     runs-on: ubuntu-latest
