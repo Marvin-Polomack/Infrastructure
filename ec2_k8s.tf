@@ -1,7 +1,7 @@
 module "ec2_k8s" {
   source = "./modules/ec2"
   ami                    = data.aws_ami.amazon_linux_2023.image_id
-  instance_type          = "t2.micro"
+  instance_type          = "t3.micro"
   subnet_id              = aws_subnet.k8s_subnet.id
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
 
