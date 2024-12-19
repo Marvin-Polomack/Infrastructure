@@ -43,8 +43,7 @@ jobs:
 
       - name: Conditional Actions Based on Terraform Plan
         if: ${{ steps.plan.outputs.exitcode == '1' }}
-        run: echo "Terraform failed with an error!"
-        continue-on-error: false
+        run: echo "Terraform failed with an error!" && exit 1
 
       - name: Proceed if Changes Were Detected
         if: ${{ steps.plan.outputs.exitcode == '2' }}
