@@ -57,7 +57,7 @@ jobs:
   terraform_apply:
     runs-on: ubuntu-latest
     needs: terraform_plan
-    if: success()
+    if: success() && needs.terraform_plan.outputs.terraform_exit_code == '2'
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -66,19 +66,17 @@ jobs:
     environment:
       name: ${{ github.event.inputs.environment || 'production' }}
     steps:
-      - name: Debug Output
-        run: echo "terraform_exit_code=${{ needs.terraform_plan.outputs.terraform_exit_code }}"
-      # - name: Checkout code
-      #   uses: actions/checkout@v2
-      #   with:
-      #     submodules: true
-      #     fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
 
-      # - name: Setup Terraform
-      #   uses: hashicorp/setup-terraform@v1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
 
-      # - name: Terraform Init
-      #   run: terraform init
+      - name: Terraform Init
+        run: terraform init
 
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve=true
+      - name: Terraform Apply
+        run: terraform apply -auto-approve=true
