@@ -40,6 +40,7 @@ jobs:
           set +e
           terraform plan -detailed-exitcode
           EXIT_CODE=$?
+          echo "${EXIT_CODE} is the exit code"
           set -e
 
           if [ $EXIT_CODE -eq 2 ]; then
