@@ -39,8 +39,6 @@ jobs:
         run: |
           set +e
           terraform plan -detailed-exitcode
-          EXIT_CODE=$?
-          echo "${EXIT_CODE} is the exit code"
           set -e
 
       - name: Conditional Actions Based on Terraform Plan
@@ -50,7 +48,7 @@ jobs:
 
       - name: Proceed if Changes Were Detected
         if: ${{ steps.plan.outputs.exitcode == '2' }}
-        run: echo "Proceeding with changes detected by Terraform."
+        run: echo "Proceeding with changes detected by Terraform." && echo "terraform_exit_code=${steps.plan.outputs.exitcode}" >> $GITHUB_ENV
 
   terraform_apply:
     runs-on: ubuntu-latest
