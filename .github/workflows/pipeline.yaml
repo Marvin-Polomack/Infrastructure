@@ -43,28 +43,13 @@ jobs:
           echo "${EXIT_CODE} is the exit code"
           set -e
 
-          if [ $EXIT_CODE -eq 2 ]; then
-            echo "Terraform detected changes."
-            echo "terraform_exit_code=2" >> $GITHUB_ENV
-          elif [ $EXIT_CODE -eq 1 ]; then
-            echo "Terraform encountered an error."
-            echo "terraform_exit_code=1" >> $GITHUB_ENV
-          else
-            echo "No changes detected."
-            echo "terraform_exit_code=0" >> $GITHUB_ENV
-          fi
-
       - name: Conditional Actions Based on Terraform Plan
-        if: ${{ env.terraform_exit_code == '1' }}
-        run: echo "${{ env.terraform_exit_code == '1' }}"
-
-      - name: Conditional Actions Based on Terraform Plan
-        if: ${{ env.terraform_exit_code == '1' }}
+        if: ${{ steps.plan.outputs.exitcode == '1' }}
         run: echo "Terraform failed with an error!"
         continue-on-error: false
 
       - name: Proceed if Changes Were Detected
-        if: ${{ env.terraform_exit_code == '2' }}
+        if: ${{ steps.plan.outputs.exitcode == '2' }}
         run: echo "Proceeding with changes detected by Terraform."
 
   terraform_apply:
