@@ -13,7 +13,7 @@ module "ec2_k8s" {
               sudo dnf update -y
 
               # Install necessary tools
-              sudo dnf install -y curl unzip jq
+              sudo dnf install -y curl unzip jq --allowerasing
 
               # Install Docker
               sudo dnf install -y docker
