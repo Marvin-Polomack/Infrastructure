@@ -65,17 +65,17 @@ jobs:
     steps:
       - name: Debug Output
         run: echo "terraform_exit_code=${{ needs.terraform_plan.outputs.terraform_exit_code }}"
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-          fetch-depth: 0
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
+      #   with:
+      #     submodules: true
+      #     fetch-depth: 0
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v1
 
-      - name: Terraform Init
-        run: terraform init
+      # - name: Terraform Init
+      #   run: terraform init
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve=true
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve=true
