@@ -61,4 +61,5 @@ module "ec2_k8s" {
   tags = {
     Name = "ec2_k8s"
   }
+  depends_on = [ aws_s3_bucket.kubeconfig_bucket ]
 }
