@@ -36,7 +36,7 @@ resource "aws_autoscaling_group" "twim_asg" {
 
 resource "aws_ecs_task_definition" "twim_chat_task" {
   family                   = "twim-chat-task"
-  network_mode             = "bridge"
+  network_mode             = "awsvpc"
   container_definitions    = jsonencode([
     {
       name: "twim-chat-container",
