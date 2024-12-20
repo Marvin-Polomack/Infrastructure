@@ -23,6 +23,7 @@ resource "aws_ecs_cluster" "freelance_ecs_cluster" {
 }
 
 resource "aws_autoscaling_group" "twim_asg" {
+  name = "twim-asg"
   launch_template {
     id      = aws_launch_template.freelance_ecs_instance.id
     version = "$Latest"
