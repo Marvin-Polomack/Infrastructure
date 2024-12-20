@@ -13,7 +13,7 @@ resource "aws_subnet" "public_subnet" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "k8s_public_subnet"
+    Name = "public_subnet"
   }
 }
 
@@ -25,7 +25,7 @@ resource "aws_subnet" "private_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "k8s_private_subnet"
+    Name = "private_subnet"
   }
 }
 

@@ -81,7 +81,7 @@ resource "aws_ecs_service" "twim_chat_service" {
 
  load_balancer {
    target_group_arn = module.twim_alb.target_group_arn
-   container_name   = "dockergs"
+   container_name   = "twim-chat-container"
    container_port   = 3000
  }
 
