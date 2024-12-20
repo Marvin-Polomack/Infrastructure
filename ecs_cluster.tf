@@ -8,14 +8,14 @@ resource "aws_launch_template" "freelance_ecs_instance" {
     security_groups             = [aws_security_group.k8s_sg.id]
   }
 
-  user_data = <<EOF
+  user_data = base64encode(<<EOF
               #!/bin/bash
               yum update -y
               amazon-linux-extras enable ecs
               yum install -y ecs-init
               systemctl enable --now ecs
               EOF
-}
+  )}
 
 resource "aws_ecs_cluster" "freelance_ecs_cluster" {
   name = "freelance-ecs-cluster"
