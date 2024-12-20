@@ -57,7 +57,6 @@ resource "aws_ecs_service" "twim_chat_service" {
   name            = "twim-chat-service"
   cluster         = aws_ecs_cluster.freelance_ecs_cluster.id
   task_definition = aws_ecs_task_definition.twim_chat_task.arn
-  launch_type     = "EC2"
 
   desired_count = 1
 
