@@ -37,22 +37,16 @@ resource "aws_autoscaling_group" "ecs_asg" {
 resource "aws_ecs_task_definition" "twim_chat_task" {
   family                   = "twim-chat-task"
   network_mode             = "bridge"
-  container_definitions    = jsonencode(
-    [
-      {
-      family: "twim-chat-task"
-      containerDefinitions: [
+  container_definitions    = jsonencode([
+    {
+      name: "twim-chat-container",
+      image: "216989096559.dkr.ecr.eu-west-3.amazonaws.com/freelance-ecr/twimchat:latest",
+      cpu: 10,
+      memory: 512,
+      portMappings: [
         {
-          name: "twim-chat-container"
-          image: "216989096559.dkr.ecr.eu-west-3.amazonaws.com/freelance-ecr/twimchat:latest"
-          cpu: 10
-          memory: 512
-          portMappings: [
-            {
-              containerPort: 3000
-              hostPort: 3000
-            }
-          ]
+          containerPort: 3000,
+          hostPort: 3000
         }
       ]
     }
