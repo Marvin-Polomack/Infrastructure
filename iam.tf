@@ -3,6 +3,7 @@ module "infrastructure_github_action_iam_role" {
 
     github_org      = "Marvin-Polomack"
     repository_name = "Infrastructure"
+    create_oidc     = true
 }
 
 module "theworldismind_github_action_iam_role" {
