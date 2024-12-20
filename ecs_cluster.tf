@@ -15,7 +15,8 @@ resource "aws_launch_template" "freelance_ecs_instance" {
               yum install -y ecs-init
               systemctl enable --now ecs
               EOF
-  )}
+  )
+}
 
 resource "aws_ecs_cluster" "freelance_ecs_cluster" {
   name = "freelance-ecs-cluster"
