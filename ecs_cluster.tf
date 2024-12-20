@@ -34,33 +34,36 @@ resource "aws_autoscaling_group" "ecs_asg" {
   desired_capacity    = 1
 }
 
-# resource "aws_ecs_task_definition" "example" {
-#   family                   = "example-task"
-#   network_mode             = "bridge"
-#   container_definitions    = <<DEFINITION
-# [
-#   {
-#     "name": "nginx",
-#     "image": "nginx:latest",
-#     "memory": 128,
-#     "cpu": 128,
-#     "essential": true,
-#     "portMappings": [
-#       {
-#         "containerPort": 80,
-#         "hostPort": 80
-#       }
-#     ]
-#   }
-# ]
-# DEFINITION
-# }
+resource "aws_ecs_task_definition" "twim_chat_task" {
+  family                   = "twim-chat-task"
+  network_mode             = "bridge"
+  container_definitions    = jsonencode(
+    [
+      {
+      family: "twim-chat-task"
+      containerDefinitions: [
+        {
+          name: "twim-chat-container"
+          image: "216989096559.dkr.ecr.eu-west-3.amazonaws.com/freelance-ecr/twimchat:latest"
+          cpu: 10
+          memory: 512
+          portMappings: [
+            {
+              containerPort: 3000
+              hostPort: 3000
+            }
+          ]
+        }
+      ]
+    }
+  ])
+}
 
-# resource "aws_ecs_service" "example" {
-#   name            = "example-service"
-#   cluster         = aws_ecs_cluster.main.id
-#   task_definition = aws_ecs_task_definition.example.arn
-#   launch_type     = "EC2"
+resource "aws_ecs_service" "twim_chat_service" {
+  name            = "twim-chat-service"
+  cluster         = aws_ecs_cluster.freelance_ecs_cluster.id
+  task_definition = aws_ecs_task_definition.twim_chat_task.arn
+  launch_type     = "EC2"
 
-#   desired_count = 1
-# }
+  desired_count = 1
+}
