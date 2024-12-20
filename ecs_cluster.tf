@@ -1,6 +1,6 @@
 resource "aws_launch_template" "freelance_ecs_instance" {
   name_prefix   = "freelance-ecs-instance"
-  image_id      = data.aws_ami.amazon_linux_2023.id
+  image_id      = data.aws_ami.amazon_linux_2023.image_id
   instance_type = "t3.micro" # Free-tier eligible
 
   network_interfaces {
@@ -9,12 +9,12 @@ resource "aws_launch_template" "freelance_ecs_instance" {
   }
 
   user_data = <<EOF
-#!/bin/bash
-yum update -y
-amazon-linux-extras enable ecs
-yum install -y ecs-init
-systemctl enable --now ecs
-EOF
+              #!/bin/bash
+              yum update -y
+              amazon-linux-extras enable ecs
+              yum install -y ecs-init
+              systemctl enable --now ecs
+              EOF
 }
 
 resource "aws_ecs_cluster" "freelance_ecs_cluster" {
