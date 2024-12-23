@@ -1,0 +1,34 @@
+name: Scale Down ASG
+
+on:
+  workflow_dispatch: # Triggered manually
+  # schedule:
+  #   - cron: '0 0 * * *' # Runs daily at midnight (adjust as needed)
+
+env:
+  REGION: eu-west-3 # Set your AWS region
+  ASG_NAME: twim-asg # Name of your Auto Scaling Group
+
+jobs:
+  scale-down-asg:
+    name: Scale Down ASG
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.REGION }}
+
+      - name: Scale Down ASG
+        run: |
+          aws autoscaling update-auto-scaling-group \
+            --auto-scaling-group-name ${{ env.ASG_NAME }} \
+            --desired-capacity 0 \
+            --min-size 0 \
+            --max-size 0
+          echo "Scaled down ASG: ${{ env.ASG_NAME }} to 0 instances."

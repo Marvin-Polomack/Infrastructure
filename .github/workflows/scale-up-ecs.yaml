@@ -1,0 +1,37 @@
+name: Scale Up ASG
+
+on:
+  workflow_dispatch: # Triggered manually
+  # schedule:
+  #   - cron: '0 6 * * *' # Runs daily at 6 AM (adjust as needed)
+
+env:
+  REGION: us-east-1 # Set your AWS region
+  ASG_NAME: twim-asg # Name of your Auto Scaling Group
+  DESIRED_CAPACITY: 1 # Set your desired number of instances
+  MIN_CAPACITY: 1 # Set your minimum capacity
+  MAX_CAPACITY: 1 # Set your maximum capacity
+
+jobs:
+  scale-up-asg:
+    name: Scale Up ASG
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.REGION }}
+
+      - name: Scale Up ASG
+        run: |
+          aws autoscaling update-auto-scaling-group \
+            --auto-scaling-group-name ${{ env.ASG_NAME }} \
+            --desired-capacity ${{ env.DESIRED_CAPACITY }} \
+            --min-size ${{ env.MIN_CAPACITY }} \
+            --max-size ${{ env.MAX_CAPACITY }}
+          echo "Scaled up ASG: ${{ env.ASG_NAME }} to ${{ env.DESIRED_CAPACITY }} instances."
